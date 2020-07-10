@@ -31,8 +31,9 @@ install_crc() {
         mkdir -p "${install_path}/bin"
     fi
 
-    curl -fL# -N "${download}" | tar -xz -C "${install_path}/bin" --strip-components=1
+    echo "This is a large file to download: $(curl -sI $download | grep "Content-Length:" | sed 's/Content-Length: //g' | sed 's/\r//g' | numfmt --to=iec)"
+
+    curl -fL# -N "${download}" | tar -x -J -C "${install_path}/bin" --strip-components=1
 }
 
-echo "This is a couple of Gbs in size, so this will take a few minutes"
 install_crc $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
