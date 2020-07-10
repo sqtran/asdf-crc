@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -e
+
+#
+# https://mirror.openshift.com/pub/openshift-v4/clients/crc/1.12.0/crc-linux-amd64.tar.xz
+#
+
+install_crc() {
+    local install_type=$1
+    local install_version=$2
+    local install_path=$3
+
+    case $(uname -s) in
+    Darwin) os="darwin" ;;
+    *) os="linux" ;;
+    esac
+
+    case $(uname -m) in
+    x86_64) arch="amd64" ;;
+    *) arch="other" ;;
+    esac
+
+    if [ "$arch" = "other" ]; then
+        echo "Unsupported architecture $(uname -m). Only x64 binaries are available."
+        exit
+    fi
+
+    download="https://mirror.openshift.com/pub/openshift-v4/clients/crc/${install_version}/crc-${os}-amd64.tar.xz"
+
+    if [ ! -d "${install_path}/bin" ]; then
+        mkdir -p "${install_path}/bin"
+    fi
+
+    curl -fL# -N "${download}" | tar -xz -C "${install_path}/bin" --strip-components=1
+}
+
+echo "This is a couple of Gbs in size, so this will take a few minutes"
+install_crc $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
