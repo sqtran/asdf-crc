@@ -6,4 +6,4 @@ cmd="curl --silent --location"
 releases_path="https://mirror.openshift.com/pub/openshift-v4/clients/crc/"
 
 # kinda hacky, but there isn't something like a Github API REST endpoint to call, so just parse the HTML output
-eval "$cmd $releases_path" | grep -o "<a href=\"[0-9]\([0-9a-z\.\-]\)\+/\">" | sed 's/<a href="//g' | sed 's/\/">//g' | sort -V -r | xargs
+eval "$cmd $releases_path" | grep -o "<a href=\"\([0-9a-z\.\-]\)\+/\">" | sed 's/<a href="//g' | sed 's/\/">//g' | sort -V -r | xargs
