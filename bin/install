@@ -11,7 +11,7 @@ install_crc() {
     local install_path=$3
 
     case $(uname -s) in
-    Darwin) os="darwin" ;;
+    Darwin) os="macos" ;;
     *) os="linux" ;;
     esac
 
