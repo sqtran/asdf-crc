@@ -31,7 +31,7 @@ install_crc() {
         mkdir -p "${install_path}/bin"
     fi
 
-    echo "This is a large file to download: $(curl -sI $download | grep "Content-Length:" | sed 's/Content-Length: //g' | sed 's/\r//g' | if [ "$os" = "macos" ]; then gnumfmt --to=iec; else numfmt --to=iec; fi)"
+    echo "This is a large file to download: $(curl -sI $download | grep "Content-Length:" | sed 's/Content-Length: //g' | tr -d '[:space:]' | if [ "$os" = "macos" ]; then gnumfmt --to=iec; else numfmt --to=iec; fi)"
 
     curl -fL# -N "${download}" | tar -x -J -C "${install_path}/bin" --strip-components=1
 }
