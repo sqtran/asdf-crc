@@ -28,6 +28,25 @@ format_num() {
     echo "$(dc <<< "2 k ${num} ${unit} / p") $pretty"
 }
 
+# Function to compare versions in a semver compatible way
+# given args A and B, return 0 if A=B, -1 if A<B and 1 if A>B
+function semver_compare() {
+  if [ "$1" = "$2" ]; then
+    # A = B
+    echo 0
+  else
+    ordered=$(printf '%s\n' "$@" | sort -V | head -n 1)
+
+    if [ "$ordered" = "$1" ]; then
+      # A < B
+      echo -1
+    else
+      # A > B
+      echo 1
+    fi
+  fi
+}
+
 install_crc() {
     local install_type=$1
     local install_version=$2
@@ -48,16 +67,22 @@ install_crc() {
         exit
     fi
 
-    download="https://mirror.openshift.com/pub/openshift-v4/clients/crc/${install_version}/crc-${os}-amd64.tar.xz"
-
     if [ ! -d "${install_path}/bin" ]; then
         mkdir -p "${install_path}/bin"
     fi
 
-    file_size=$(curl -sI $download | grep "Content-Length:" | sed 's/Content-Length: //g' | tr -d '[:space:]')
-    echo "This is a large file to download: $(format_num ${file_size})"
-
-    curl -fL# -N "${download}" | tar -x -J -C "${install_path}/bin" --strip-components=1
+    # CRC is only avail as an OSX pkg install after 1.27.0
+    if [[ "$os" == "macos" -a $(semver_compare $install_version 1.26.0) == 1 ]]; then
+        download="https://mirror.openshift.com/pub/openshift-v4/clients/crc/${install_version}/crc-${os}-amd64.pkg"
+        file_size=$(curl -sI $download | grep "Content-Length:" | sed 's/Content-Length: //g' | tr -d '[:space:]')
+        echo "This is a large file to download: $(format_num ${file_size})"
+        installer -pkg crc-${os}-amd64.pkg -target ${install_path}
+    else
+        download="https://mirror.openshift.com/pub/openshift-v4/clients/crc/${install_version}/crc-${os}-amd64.tar.xz"
+        file_size=$(curl -sI $download | grep "Content-Length:" | sed 's/Content-Length: //g' | tr -d '[:space:]')
+        echo "This is a large file to download: $(format_num ${file_size})"
+        curl -fL# -N "${download}" | tar -x -J -C "${install_path}/bin" --strip-components=1
+    fi
 }
 
 install_crc $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
