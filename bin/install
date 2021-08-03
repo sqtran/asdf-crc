@@ -13,19 +13,19 @@ format_num() {
 
     if [[ "${num}" -ge ${gigabyte} ]]; then
         pretty='GB'
-        scaled_num=$(expr ${num} / ${gigabyte})
+        unit=${gigabyte}
     elif [[ "${num}" -ge ${megabyte} ]]; then
         pretty='MB'
-        scaled_num=$(expr ${num} / ${megabyte})
+        unit=${megabyte}
     elif [[ "${num}" -ge ${kilobyte} ]]; then
         pretty='KB'
-        scaled_num=$(expr ${num} / ${kilobyte})
+        unit=${kilobyte}
     else
         pretty='B'
         scaled_num=${num}
     fi
 
-    printf "%.2f%s" $scaled_num $pretty
+    echo "$(dc <<< "2 k ${num} ${unit} / p") $pretty"
 }
 
 install_crc() {
