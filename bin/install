@@ -72,11 +72,13 @@ install_crc() {
     fi
 
     # CRC is only avail as an OSX pkg install after 1.27.0
-    if [[ "$os" == "macos" -a $(semver_compare $install_version 1.26.0) == 1 ]]; then
+    if [[ "$os" == "macos" && $(semver_compare $install_version 1.26.0) == 1 ]]; then
         download="https://mirror.openshift.com/pub/openshift-v4/clients/crc/${install_version}/crc-${os}-amd64.pkg"
         file_size=$(curl -sI $download | grep "Content-Length:" | sed 's/Content-Length: //g' | tr -d '[:space:]')
         echo "This is a large file to download: $(format_num ${file_size})"
-        installer -pkg crc-${os}-amd64.pkg -target ${install_path}
+        curl -L# -N -o crc-download.pkg "${download}"
+        installer -pkg crc-download.pkg -target ${install_path}
+        rm crc-download.pkg
     else
         download="https://mirror.openshift.com/pub/openshift-v4/clients/crc/${install_version}/crc-${os}-amd64.tar.xz"
         file_size=$(curl -sI $download | grep "Content-Length:" | sed 's/Content-Length: //g' | tr -d '[:space:]')
