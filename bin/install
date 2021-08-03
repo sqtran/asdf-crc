@@ -5,6 +5,29 @@ set -e
 # https://mirror.openshift.com/pub/openshift-v4/clients/crc/1.12.0/crc-linux-amd64.tar.xz
 #
 
+format_num() {
+    local num=$1
+    local gigabyte=1073741824
+    local megabyte=1048576
+    local kilobyte=1024
+
+    if [[ "${num}" -ge ${gigabyte} ]]; then
+        pretty='GB'
+        unit=${gigabyte}
+    elif [[ "${num}" -ge ${megabyte} ]]; then
+        pretty='MB'
+        unit=${megabyte}
+    elif [[ "${num}" -ge ${kilobyte} ]]; then
+        pretty='KB'
+        unit=${kilobyte}
+    else
+        pretty='B'
+        scaled_num=${num}
+    fi
+
+    echo "$(dc <<< "2 k ${num} ${unit} / p") $pretty"
+}
+
 install_crc() {
     local install_type=$1
     local install_version=$2
@@ -31,7 +54,8 @@ install_crc() {
         mkdir -p "${install_path}/bin"
     fi
 
-    echo "This is a large file to download: $(curl -sI $download | grep "Content-Length:" | sed 's/Content-Length: //g' | tr -d '[:space:]' | if [ "$os" = "macos" ]; then gnumfmt --to=iec; else numfmt --to=iec; fi)"
+    file_size=$(curl -sI $download | grep "Content-Length:" | sed 's/Content-Length: //g' | tr -d '[:space:]')
+    echo "This is a large file to download: $(format_num ${file_size})"
 
     curl -fL# -N "${download}" | tar -x -J -C "${install_path}/bin" --strip-components=1
 }
