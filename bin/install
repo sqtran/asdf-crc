@@ -54,7 +54,7 @@ install_crc() {
         mkdir -p "${install_path}/bin"
     fi
 
-    file_size=$(curl -sI $download | grep "Content-Length:" | sed 's/Content-Length: //g' | tr -d '[:space:]')
+    file_size=$(curl -sIL $download | grep "Content-Length:" | sed 's/Content-Length: //g' | tr -d '[:space:]')
     echo "This is a large file to download: $(format_num ${file_size})"
 
     curl -fL# -N "${download}" | tar -x -J -C "${install_path}/bin" --strip-components=1
