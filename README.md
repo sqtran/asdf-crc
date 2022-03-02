@@ -5,7 +5,7 @@
 
 [Red Hat CodeReady Containers](https://github.com/code-ready/crc) plugin for [asdf](https://github.com/asdf-vm/asdf) version manager.  This work is based off of the [minishift](https://github.com/sqtran/asdf-minishift) plugin.
 
-Note that this is only supported on `macOS`, `RHEL 7.5+`, `Centos 7.5+`, and `Fedora`.  It may work on `Ubuntu`, but additional packages may be required.  
+Note that this is only supported on `macOS`, `RHEL 7.5+`, `Centos 7.5+`, and `Fedora`.  It may work on `Ubuntu`, but additional packages may be required.  The repositories that this plugin retrieves content from changes over time, so newer releases of `crc` may change the behavior of this `asdf` plugin.
 
 View the [CodeReady Docs](https://code-ready.github.io/crc/) Github Pages for in-depth details.
 
