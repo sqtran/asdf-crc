@@ -3,7 +3,7 @@
 set -eo pipefail
 
 cmd="curl --silent --location"
-releases_path="https://developers.redhat.com/content-gateway/rest/mirror2/pub/openshift-v4/clients/crc/"
+releases_path="https://mirror.openshift.com/pub/openshift-v4/clients/crc/"
 
 # kinda hacky, but there isn't something like a Github API REST endpoint to call, so just parse the HTML output
 eval "$cmd $releases_path" | grep -o "<a href=\"$releases_path\([0-9a-z\.\-]\)\+/\">" | grep -o "\([0-9]\+\.\)\+[0-9]\|latest" | sort -V | xargs
